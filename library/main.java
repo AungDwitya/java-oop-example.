@@ -1,129 +1,127 @@
 import java.util.Scanner;
 
-class Main {
+public class main {
+    static Scanner scan = new Scanner(System.in);
+    static Library library = new Library();
 
-  static Scanner scan = new Scanner(System.in);
-  static Library library = new Library();
+    public static void main(String[] args) {
+        initLibraryData();
 
-  public static void main(String[] args) {
-    initLibraryData();
+        String isContinue = "y";
 
-    String isContinue = "y";
+        while (isContinue.equals("y")) {
+            showMenu();
+            int selectedMenu = chooseMenu();
 
-    while (isContinue.equals("y")) {
-      showMenu();
-      int selectedMenu = chooseMenu();
+            if (selectedMenu == 1) {
+                showBooks();
+            } else if (selectedMenu == 2) {
+                showMembers();
+            } else if (selectedMenu == 3) {
+                addMember();
+            } else if (selectedMenu == 4) {
+                borrowBook();
+            } else if (selectedMenu == 5) {
+                returnBook();
+            } else if (selectedMenu == 6) {
+                addBook();
+            } else {
+                System.out.println("Wrong input");
+            }
 
-      if (selectedMenu == 1) {
-        showBooks();
-      } else if (selectedMenu == 2) {
-        showMembers();
-      } else if (selectedMenu == 3) {
-        addMember();
-      } else if (selectedMenu == 4) {
-        borrowBook();
-      } else if (selectedMenu == 5) {
-        returnBook();
-      } else {
-        System.out.println("wrong input");
-      }
-
-      System.out.print("continue ? ");
-      isContinue = scan.next();
+            System.out.print("Continue? (y/n): ");
+            isContinue = scan.next();
+        }
     }
-  }
 
-  public static void showMenu() {
-    System.out.println("================================");
-    System.out.println("1. show books list");
-    System.out.println("2. show members list");
-    System.out.println("3. add member");
-    System.out.println("4. borrow book");
-    System.out.println("5. return book");
-    System.out.println("================================");
-  }
-
-  public static void initLibraryData() {
-    Book book1 = new Book();
-    book1.id = "1";
-    book1.title = "pemrograman java";
-
-    Book book2 = new Book();
-    book2.id = "2";
-    book2.title = "pemrograman oop";
-
-    Book book3 = new Book();
-    book3.id = "3";
-    book3.title = "pemrograman android";
-
-    Member member1 = new Member();
-    member1.id = "1";
-    member1.name = "aka";
-
-    Member member2 = new Member();
-    member2.id = "2";
-    member2.name = "budi";
-
-    Member member3 = new Member();
-    member3.id = "3";
-    member3.name = "tono";
-
-    library.books.add(book1);
-    library.books.add(book2);
-    library.books.add(book3);
-
-    library.members.add(member1);
-    library.members.add(member2);
-    library.members.add(member3);
-  }
-
-  public static int chooseMenu() {
-    System.out.print("choose menu : ");
-    int pilihan = scan.nextInt();
-    return pilihan;
-  }
-
-  public static void showBooks() {
-    for (Book book : library.books) {
-      System.out.println(book.id + " " + book.title);
+    public static void showMenu() {
+        System.out.println("================================");
+        System.out.println("1. Show book list");
+        System.out.println("2. Show member list");
+        System.out.println("3. Add member");
+        System.out.println("4. Borrow book");
+        System.out.println("5. Return book");
+        System.out.println("6. Add book");
+        System.out.println("================================");
     }
-  }
 
-  public static void showMembers() {
-    for (Member member : library.members) {
-      System.out.println(member.id + " " + member.name);
+    public static void initLibraryData() {
+        Book book1 = new Book("1", "Pemrograman Java");
+        Book book2 = new Book("2", "Pemrograman OOP");
+        Book book3 = new Book("3", "Pemrograman Android");
+
+        Member member1 = new Member("1", "Aka");
+        Member member2 = new Member("2", "Budi");
+        Member member3 = new Member("3", "Tono");
+
+        library.addBook(book1);
+        library.addBook(book2);
+        library.addBook(book3);
+
+        library.addMember(member1);
+        library.addMember(member2);
+        library.addMember(member3);
     }
-  }
 
-  public static void addMember() {
-    Member member = new Member();
+    public static int chooseMenu() {
+        System.out.print("Choose menu: ");
+        int pilihan = scan.nextInt();
+        return pilihan;
+    }
 
-    System.out.print("id : ");
-    member.id = scan.next();
+    public static void showBooks() {
+        System.out.println("Books List:");
+        for (Book book : library.getBooks()) {
+            System.out.println(book.getId() + " " + book.getTitle());
+        }
+    }
 
-    System.out.print("name : ");
-    member.name = scan.next();
+    public static void showMembers() {
+        System.out.println("Members List:");
+        for (Member member : library.getMembers()) {
+            System.out.println(member.getId() + " " + member.getName());
+        }
+    }
 
-    library.addMember(member);
-  }
+    public static void addMember() {
+        System.out.print("Enter member ID: ");
+        String memberId = scan.next();
 
-  public static void borrowBook() {
-    System.out.print("id member : ");
-    String memberId = scan.next();
+        System.out.print("Enter member name: ");
+        String memberName = scan.next();
 
-    System.out.print("id book : ");
-    String bookId = scan.next();
+        Member member = new Member(memberId, memberName);
+        library.addMember(member);
+    }
 
-    library.giveBook(memberId, bookId);
-  }
+    public static void borrowBook() {
+        System.out.print("Enter member ID: ");
+        String memberId = scan.next();
 
-  public static void returnBook() {
-    System.out.print("id member : ");
-    String memberId = scan.next();
+        System.out.print("Enter book ID: ");
+        String bookId = scan.next();
 
-    System.out.print("id book : ");
-    String bookId = scan.next();
+        library.giveBook(bookId, memberId);
+    }
 
-    library.receiveBook(memberId, bookId);
-  }
+    public static void returnBook() {
+        System.out.print("Enter member ID: ");
+        String memberId = scan.next();
+
+        System.out.print("Enter book ID: ");
+        String bookId = scan.next();
+
+        library.receiveBook(bookId, memberId);
+    }
+
+    public static void addBook() {
+        System.out.print("Enter book ID: ");
+        String bookId = scan.next();
+
+        System.out.print("Enter book title: ");
+        String bookTitle = scan.next();
+
+        Book book = new Book(bookId, bookTitle);
+        library.addBook(book);
+    }
 }

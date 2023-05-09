@@ -1,15 +1,30 @@
+
 import java.util.ArrayList;
 
 class Member {
-  public String id;
-  public String name;
-  public ArrayList<Book> borrowedBooks = new ArrayList<Book>();
+  private String id;
+  private String name;
+  private ArrayList<Book> borrowedBooks;
+
+  public Member(String id, String name) {
+    this.id = id;
+    this.name = name;
+    this.borrowedBooks = new ArrayList<>();
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
 
   public void receiveBook(Book book) {
-    this.borrowedBooks.add(book);
+    borrowedBooks.add(book);
   }
 
   public void giveBook(Book book) {
-    this.borrowedBooks.remove(book);
+    borrowedBooks.remove(book);
   }
 }
