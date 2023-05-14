@@ -1,40 +1,62 @@
-
-
 import java.util.ArrayList;
 
-class Library {
-  private ArrayList<Book> books;
-  private ArrayList<Member> members;
+abstract class Library {
+  public ArrayList<Book> books = new ArrayList<Book>();
+  public ArrayList<Member> members = new ArrayList<Member>();
 
-  public Library() {
-    this.books = new ArrayList<>();
-    this.members = new ArrayList<>();
+  protected int getMemberIndex(Member member) {
+    return this.members.indexOf(member);
   }
 
-  public ArrayList<Book> getBooks() {
-    return books;
+  protected Member getMemberById(String id) throws Exception {
+    for (Member member : this.members) {
+      if (member.getId().equals(id)) {
+        return member;
+      }
+    }
+    throw new Exception("Member " + id + " tidak ada");
   }
 
-  public ArrayList<Member> getMembers() {
-    return members;
+  protected Book getBookById(String id) throws Exception {
+    for (Book book : this.books) {
+      if (book.id.equals(id)) {
+        return book;
+      }
+    }
+    throw new Exception("Buku  " + id + " tidak ada");
   }
 
+  public abstract void addMember(Member member);
+
+  public abstract Boolean isMemberIdExist(String id);
+
+  public abstract void addBook(Book book);
+
+  public abstract Boolean isBookIdExist(String id);
+
+  public abstract void giveBook(String bookId, String memberId);
+
+  public abstract void receiveBook(String bookId, String memberId);
+}
+
+class PublicLibrary extends Library {
+  // constructor
+  public PublicLibrary() {
+    super();
+  }
+
+  @Override
   public void addMember(Member member) {
     if (!isMemberIdExist(member.getId())) {
-      members.add(member);
-      System.out.println("Member added successfully.");
+      this.members.add(member);
+      System.out.println("Menambah Member Berhasil");
     } else {
-      System.out.println("Member with the same ID already exists.");
+      System.out.println("Member ID " + member.getId() + " sudah terpakai");
     }
   }
 
-  public void addMember(String memberId, String memberName) {
-    Member member = new Member(memberId, memberName);
-    addMember(member);
-  }
-
-  public boolean isMemberIdExist(String id) {
-    for (Member member : members) {
+  public Boolean isMemberIdExist(String id) {
+    for (Member member : this.members) {
       if (member.getId().equals(id)) {
         return true;
       }
@@ -42,78 +64,56 @@ class Library {
     return false;
   }
 
+  // Menambahkan buku
+  @Override
   public void addBook(Book book) {
-    if (!isBookIdExist(book.getId())) {
-      books.add(book);
-      System.out.println("Book added successfully.");
+    if (!isBookIdExist(book.id)) {
+      this.books.add(book);
+      System.out.println(" Menambah Buku Berhasil.");
     } else {
-      System.out.println("Book with the same ID already exists.");
+      System.out.println("Buku ID " + book.id + " Sudah Ada");
     }
   }
 
-  public void addBook(String bookId, String bookTitle) {
-    Book book = new Book(bookId, bookTitle);
-    addBook(book);
-  }
 
-  public boolean isBookIdExist(String id) {
-    for (Book book : books) {
-      if (book.getId().equals(id)) {
+  public Boolean isBookIdExist(String id) {
+    for (Book book : this.books) {
+      if (book.id.equals(id)) {
         return true;
       }
     }
     return false;
   }
 
+
   public void giveBook(String bookId, String memberId) {
     try {
-      Book book = getBookById(bookId);
-      books.remove(book);
+      Book book = this.getBookById(bookId);
+      Member member = this.getMemberById(memberId);
+      int memberIndex = this.getMemberIndex(member);
 
-      Member member = getMemberById(memberId);
-      if (member != null) {
-        member.receiveBook(book);
-        System.out.println("Book borrowed successfully.");
-      } else {
-        System.out.println("Invalid memberId. Please try again.");
-      }
-    } catch (NullPointerException e) {
-      System.out.println("Invalid bookId. Please try again.");
+      this.books.remove(book);
+      this.members.get(memberIndex).getborrowedBooks().add(book);
+
+      System.out.println("Buku dengan ID " + book.id + " telah berhasil dipinjam oleh member dengan ID " + member.getId());
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
     }
   }
 
   public void receiveBook(String bookId, String memberId) {
     try {
-      Book book = getBookById(bookId);
-      books.add(book);
+      Member member = this.getMemberById(memberId);
+      int memberIndex = this.getMemberIndex(member);
 
-      Member member = getMemberById(memberId);
-      if (member != null) {
-        member.giveBook(book);
-        System.out.println("Book returned successfully.");
-      } else {
-        System.out.println("Invalid memberId. Please try again.");
-      }
-    } catch (NullPointerException e) {
-      System.out.println("Invalid bookId. Please try again.");
-    }
-  }
+      Book book = this.members.get(memberIndex).getBookById(bookId);
 
-  private Member getMemberById(String id) {
-    for (Member member : members) {
-      if (member.getId().equals(id)) {
-        return member;
-      }
-    }
-    return null;
-  }
+      this.books.add(book);
+      this.members.get(memberIndex).borrowedBooks.remove(book);
 
-  private Book getBookById(String id) {
-    for (Book book : books) {
-      if (book.getId().equals(id)) {
-        return book;
-      }
+      System.out.println("Buku " + book.id + " berhasil dikembalikan oleh member " + member.getId());
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
     }
-    return null;
   }
 }
