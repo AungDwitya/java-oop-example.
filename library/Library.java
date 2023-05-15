@@ -33,7 +33,7 @@ class Library {
   public void addMember(Member member) {
     if (!isMemberIdExist(member.getId())) {
       this.members.add(member);
-      System.out.println("Menambah Member Berhasil");
+      System.out.println("Menambah Member Sukses");
     } else {
       System.out.println("Member ID " + member.getId() + " sudah terpakai");
     }
@@ -50,12 +50,23 @@ class Library {
 
   // Menambahkan buku
   public void addBook(Book book) {
-    if (!isBookIdExist(book.id)) {
-      this.books.add(book);
-      System.out.println(" Menambah Buku Berhasil.");
+    if (isBookIdExist(book.id)) {
+      System.out ,;.println("Data Buku dengan ID " + book.id + " Sudah Ada");
+    } else if ( isBookBorrowed(book.id)) {
+      System.out.println("Buku dengan ID " + book.id + " sudah ada dan Sedang Dipinjam");
     } else {
-      System.out.println("Buku ID " + book.id + " Sudah Ada");
+      this.books.add(book);
+      System.out.println("Buku Berhasil ditambahkan");
     }
+  }
+
+  private boolean isBookBorrowed(String bookId) {
+    for (Member member : this.members) {
+      if (member.getBookById(bookId) != null) {
+        return true;
+      }
+    }
+    return false;
   }
 
 
@@ -89,14 +100,18 @@ class Library {
       Member member = this.getMemberById(memberId);
       int memberIndex = this.getMemberIndex(member);
 
-      Book book = this.members.get(memberIndex).getBookById(bookId);
+      Book book = this.getBookById(bookId);
 
-      this.books.add(book);
-      this.members.get(memberIndex).borrowedBooks.remove(book);
-
-      System.out.println("Buku " + book.id + " berhasil dikembalikan oleh member " + member.getId());
+      if (book != null && this.members.get(memberIndex).getborrowedBooks().contains(book)) {
+        this.books.add(book);
+        this.members.get(memberIndex).borrowedBooks.remove(book);
+        System.out.println("Buku " + book.id + " berhasil dikembalikan oleh member " + member.getId());
+      } else {
+        System.out.println("Buku " + bookId + " tidak sedang dipinjam oleh member " + member.getId());
+      }
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
   }
+
 }
