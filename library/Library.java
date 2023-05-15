@@ -1,9 +1,13 @@
 import java.util.ArrayList;
 
-abstract class Library {
+class Library {
   public ArrayList<Book> books = new ArrayList<Book>();
   public ArrayList<Member> members = new ArrayList<Member>();
 
+  public Library() {
+    this.books = new ArrayList<>();
+    this.members = new ArrayList<>();
+  }
   protected int getMemberIndex(Member member) {
     return this.members.indexOf(member);
   }
@@ -26,26 +30,6 @@ abstract class Library {
     throw new Exception("Buku  " + id + " tidak ada");
   }
 
-  public abstract void addMember(Member member);
-
-  public abstract Boolean isMemberIdExist(String id);
-
-  public abstract void addBook(Book book);
-
-  public abstract Boolean isBookIdExist(String id);
-
-  public abstract void giveBook(String bookId, String memberId);
-
-  public abstract void receiveBook(String bookId, String memberId);
-}
-
-class PublicLibrary extends Library {
-  // constructor
-  public PublicLibrary() {
-    super();
-  }
-
-  @Override
   public void addMember(Member member) {
     if (!isMemberIdExist(member.getId())) {
       this.members.add(member);
@@ -65,7 +49,6 @@ class PublicLibrary extends Library {
   }
 
   // Menambahkan buku
-  @Override
   public void addBook(Book book) {
     if (!isBookIdExist(book.id)) {
       this.books.add(book);

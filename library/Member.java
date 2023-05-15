@@ -1,21 +1,20 @@
 import java.util.ArrayList;
 
-interface reading {
+interface Reading {
   void receiveBook(Book book);
-
   void giveBook(Book book);
-
 }
-interface reading1 {
+
+interface Reading1 {
   Book getBookById(String id);
 }
 
-class Member implements reading,reading1 {
+abstract class Member implements Reading, Reading1 {
   String id;
   String name;
   ArrayList<Book> borrowedBooks;
 
-  public Member() {
+  public Member(String id, String name) {
     this.id = id;
     this.name = name;
     this.borrowedBooks = new ArrayList<Book>();
@@ -24,7 +23,6 @@ class Member implements reading,reading1 {
   public String getId() {
     return id;
   }
-
 
   public ArrayList<Book> getborrowedBooks() {
     return borrowedBooks;
@@ -38,6 +36,15 @@ class Member implements reading,reading1 {
     this.borrowedBooks.remove(book);
   }
 
+  public abstract Book getBookById(String id);
+}
+
+class ConcreteMember extends Member {
+  public ConcreteMember(String id, String name) {
+    super(id, name);
+  }
+
+  @Override
   public Book getBookById(String id) {
     for (Book book : this.borrowedBooks) {
       if (book.id.equals(id)) {

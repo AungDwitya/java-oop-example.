@@ -3,7 +3,7 @@ import java.util.Scanner;
 class Main {
 
     static Scanner scan = new Scanner(System.in);
-    static Library library = new PublicLibrary();
+    static Library library = new Library();
 
     public static void main(String[] args) {
         initLibraryData();
@@ -59,17 +59,14 @@ class Main {
         book3.id = "3";
         book3.title = "pemrograman android";
 
-        Member member1 = new Member();
-        member1.id = "1";
-        member1.name = "adi";
+        Member member1 = new ConcreteMember("1", "ada");
 
-        Member member2 = new Member();
-        member2.id = "2";
-        member2.name = "adu";
 
-        Member member3 = new Member();
-        member3.id = "3";
-        member3.name = "ade";
+        Member member2 = new ConcreteMember("2", "adu");
+
+
+        Member member3 = new ConcreteMember("3", "ade");
+
 
         library.books.add(book1);
         library.books.add(book2);
@@ -99,17 +96,17 @@ class Main {
     }
 
     public static void addMember() {
-        Member member = new Member();
+        Scanner scan = new Scanner(System.in);
 
-        System.out.print("id : ");
-        member.id = scan.next();
+        System.out.print("id: ");
+        String memberId = scan.next();
 
-        System.out.print("name : ");
-        member.name = scan.next();
+        System.out.print("name: ");
+        String memberName = scan.next();
 
+        Member member = new ConcreteMember(memberId, memberName);
         library.addMember(member);
     }
-
     public static void addBook() {
         Book book = new Book();
 
